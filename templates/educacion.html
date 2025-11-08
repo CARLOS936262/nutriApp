@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es-mx">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=h1, initial-scale=1.0">
+    <title>Educación - nutriApp</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <main class="container py-4">
+        <nav class="nav justify-content-center mb-4">
+            <a class="nav-link fw-bold text-dark" href="{{ url_for('index') }}">Perfil</a>
+            <a class="nav-link fw-bold text-dark" href="{{ url_for('educacion') }}">Educación</a>
+            <a class="nav-link fw-bold text-dark" href="{{ url_for('planificacion') }}">Planificación</a>
+        </nav>
+
+        <h1 class="text-center mb-4">Módulo de Educación e Información</h1>
+
+        <section class="bg-white p-4 rounded mb-4">
+            <h2>Artículos Educativos</h2>
+            <ul class="list-group">
+                <li class="list-group-item">Cómo leer las etiquetas nutricionales</li>
+                <li class="list-group-item">Mitos y verdades sobre las dietas de moda</li>
+                <li class="list-group-item">Guías sobre macronutrientes y su función</li>
+                <li class="list-group-item">Importancia de la hidratación y la fibra</li>
+            </ul>
+        </section>
+
+        <section class="bg-white p-4 rounded">
+            <h2>Recursos Descargables</h2>
+            <p>Puedes descargar recursos para complementar tu nutrición y entrenamiento:</p>
+            <button class="btn btn-dark">Descargar planillas de ejercicios</button>
+        </section>
+    </main>
+
+</body>
+</html>
