@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es-mx">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Macronutrientes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <main class="container bg-info p-4 mt-5 rounded">
+
+        <h2 class="text-center mb-4">Calculadora de Macronutrientes</h2>
+
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label">Calorías diarias</label>
+                <input type="number" name="calorias" class="form-control" required>
+            </div>
+
+            <button class="btn btn-dark w-100">Calcular</button>
+        </form>
+
+        {% if resultado %}
+        <div class="alert alert-success mt-4">
+            <h5>Resultados:</h5>
+            <p>Proteínas: <strong>{{ resultado.prote }} g</strong></p>
+            <p>Carbohidratos: <strong>{{ resultado.carbs }} g</strong></p>
+            <p>Grasas: <strong>{{ resultado.grasas }} g</strong></p>
+        </div>
+        {% endif %}
+
+        <a href="/planificacion" class="btn btn-secondary mt-3 w-100">Volver</a>
+
+    </main>
+
+</body>
+</html>
