@@ -78,61 +78,93 @@ def macros():
         resultado = {"prote": prote, "carbs": carbs, "grasas": grasas}
     return render_template("macros.html", resultado=resultado)
 
-@app.route("/analizador", methods=["GET", "POST"])
-def analizador():
-    resultado = None
-    if request.method == "POST":
-        texto = request.form["ingredientes"].lower()
-        calorias = 0
+NUTRI_DB = {
+    "pollo":      {"carbs": 0.0,  "proteina": 31.0, "grasas": 3.6,  "kcal": 165},
+    "arroz":      {"carbs": 28.0, "proteina": 2.7,  "grasas": 0.3,  "kcal": 130},  
+    "huevo":      {"carbs": 1.1,  "proteina": 13.0, "grasas": 11.0, "kcal": 155},
+    "tortilla":   {"carbs": 21.0, "proteina": 2.5,  "grasas": 1.2,  "kcal": 104},  
+    "manzana":    {"carbs": 14.0, "proteina": 0.3,  "grasas": 0.2,  "kcal": 52},
+    "aguacate":   {"carbs": 9.0,  "proteina": 2.0,  "grasas": 15.0, "kcal": 160},
+    "platano":    {"carbs": 23.0, "proteina": 1.1,  "grasas": 0.3,  "kcal": 96},
+    "pechuga": {"carbs": 0.0, "proteina": 31.0, "grasas": 3.6, "kcal": 165},
+    "pan":        {"carbs": 49.0, "proteina": 9.0,  "grasas": 3.2,  "kcal": 265},
+    "leche":      {"carbs": 5.0,  "proteina": 3.4,  "grasas": 3.6,  "kcal": 60},
+    "jamon":      {"carbs": 1.6,  "proteina": 19.0,  "grasas": 3.9,  "kcal": 195},
+    "salchichon":      {"carbs": 2.0,  "proteina": 25.48,  "grasas": 34.7,  "kcal": 160},
+    "frijoles":      {"carbs": 23.5,  "proteina": 8.5,  "grasas": 7.5,  "kcal": 192},
+    "tomate":      {"carbs": 3.5,  "proteina": 0.9,  "grasas": 0.1,  "kcal": 19},
+    "cebolla":      {"carbs": 8.5,  "proteina": 0.86,  "grasas": 0.08,  "kcal": 25},
+    "carne de res":      {"carbs": 0.1,  "proteina": 37.0,  "grasas": 63.0,  "kcal": 288},
+}
 
-        base = {
-            "huevo": 78,
-            "manzana": 95,
-            "pollo": 165,
-            "arroz": 206,
-            "leche": 150,
-            "pan": 80,
-            "cebolla":47,
-            "coliflor":30,
-            "lechuga":18,
-            "pepino":12,
-            "repollo":19,
-            "zanahoria":42,
-            "tomate":22,
-            "ciruela":44,
-            "kiwi":51,
-            "fresa":36,
-            "coco":646,
-            "limon":39,
-            "mango":57,
-            "melon":31,
-            "naranja":44,
-            "platano":90,
-            "almendras":620,
-            "queso":70,
-            "tocino":665,
-            "chorizo":468,
-            "jamon":380,
-            "hamburguesa":230,
-            "pavo":186,
-            "salchichon":294,
-            "tripas":100,
-            "carne":186,
-            "mojarras":88,
-            "sardina":151,
-            "salmon":172,
-            "atun":225,
-            "tortilla":15,
-            "mayonesa":150,
+
+@app.route('/analizador', methods=['GET', 'POST'])
+def analizador():
+    """
+    Espera que el formulario envíe listas paralelas:
+    - ingrediente (nombre)
+    - cantidad (gramos)
+    - El nombre buscado se normaliza a minúsculas y espacios -> guiones bajos opcionales.
+    """
+    resultado = None
+    unknowns = []
+    detalles = []  
+    totals = {"carbs": 0.0, "proteina": 0.0, "grasas": 0.0, "kcal": 0.0}
+
+    if request.method == 'POST':
+        ingredientes = request.form.getlist('ingrediente')
+        cantidades = request.form.getlist('cantidad')
+
+        for i in range(len(ingredientes)):
+            name_raw = ingredientes[i].strip()
+            if name_raw == "":
+                continue
+            q_str = cantidades[i].strip() if i < len(cantidades) else "0"
+            try:
+                cantidad = float(q_str)
+            except:
+                cantidad = 0.0
+
+            
+            key = name_raw.lower().replace(" ", "_")
+
+            if key in NUTRI_DB:
+                info = NUTRI_DB[key]
+                
+                carbs_g = (info["carbs"] * cantidad) / 100.0
+                prot_g  = (info["proteina"] * cantidad) / 100.0
+                gras_g  = (info["grasas"] * cantidad) / 100.0
+                kcal    = (info["kcal"] * cantidad) / 100.0
+
+                detalles.append({
+                    "nombre": name_raw,
+                    "cantidad": cantidad,
+                    "carbs_g": round(carbs_g, 2),
+                    "prot_g": round(prot_g, 2),
+                    "gras_g": round(gras_g, 2),
+                    "kcal": round(kcal, 2)
+                })
+
+                totals["carbs"] += carbs_g
+                totals["proteina"] += prot_g
+                totals["grasas"] += gras_g
+                totals["kcal"] += kcal
+            else:
+                
+                unknowns.append(name_raw)
+
+        
+        totals = {k: round(v, 2) for k, v in totals.items()}
+
+        resultado = {
+            "detalles": detalles,
+            "totales": totals,
+            "unknowns": unknowns
         }
 
-        for ingrediente, cal in base.items():
-            if ingrediente in texto:
-                calorias += cal
-
-        resultado = calorias
-
-    return render_template("analizador.html", resultado=resultado)
+    
+    return render_template('analizador.html', resultado=resultado, db_keys=sorted(NUTRI_DB.keys()))
+    
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,36 +1,134 @@
 <!DOCTYPE html>
-<html lang="es-mx">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analizador de Recetas</title>
+    <meta charset="utf-8">
+    <title>Analizador de Recetas (Automático)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="bg-light">
+<body class="bg-info">
+<main class="container py-4">
 
-    <main class="container bg-info p-4 mt-5 rounded">
+    <h2 class="mb-3 text-center">Analizador de Recetas — solo escribe ingrediente y cantidad</h2>
 
-        <h2 class="text-center mb-4">Analizador de Recetas</h2>
-
-        <form method="POST">
-            <div class="mb-3">
-                <label class="form-label">Escribe los ingredientes</label>
-                <textarea name="ingredientes" class="form-control" rows="5" required></textarea>
+    <form method="POST">
+        <div id="ingredientes">
+            <div class="row g-2 align-items-center mb-2">
+                <div class="col-6">
+                    <input type="text" name="ingrediente" class="form-control" placeholder="Ingrediente (ej. pollo)">
+                </div>
+                <div class="col-3">
+                    <input type="number" step="0.1" name="cantidad" class="form-control" placeholder="Cantidad (g)" >
+                </div>
+                <div class="col-3">
+                    <button type="button" class="btn btn-outline-secondary w-100" onclick="this.closest('.row').remove()">Eliminar</button>
+                </div>
             </div>
-
-            <button class="btn btn-dark w-100">Analizar</button>
-        </form>
-
-        {% if resultado is not none %}
-        <div class="alert alert-info mt-4 text-center">
-            Calorías estimadas totales:  
-            <strong>{{ resultado }} kcal</strong>
         </div>
+
+        <div class="d-flex gap-2 mb-3">
+            <button type="button" class="btn btn-secondary" onclick="agregarCampo()">Agregar ingrediente</button>
+            <button type="submit" class="btn btn-primary">Analizar receta</button>
+            <button type="button" class="btn btn-light" onclick="autocompletarEjemplo()">Ejemplo rápido</button>
+        </div>
+    </form>
+
+    <hr>
+
+    {% if resultado %}
+        {% if resultado.unknowns %}
+            <div class="alert alert-warning">
+                <strong>Ingredientes no encontrados:</strong>
+                <ul>
+                {% for u in resultado.unknowns %}
+                    <li>{{ u }}</li>
+                {% endfor %}
+                </ul>
+                <p class="mb-0">Para obtener cálculos, agrega esos alimentos a la tabla <code>NUTRI_DB</code> en <code>app.py</code> (usa nombre en minúsculas, sin tildes y con '_' en lugar de espacios).</p>
+            </div>
         {% endif %}
 
-        <a href="/planificacion" class="btn btn-secondary mt-3 w-100">Volver</a>
+        {% if resultado.detalles %}
+            <h4>Detalle por ingrediente</h4>
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Ingrediente</th>
+                        <th>Cantidad (g)</th>
+                        <th>Carbs (g)</th>
+                        <th>Proteína (g)</th>
+                        <th>Grasas (g)</th>
+                        <th>kcal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for d in resultado.detalles %}
+                    <tr>
+                        <td>{{ d.nombre }}</td>
+                        <td>{{ d.cantidad }}</td>
+                        <td>{{ d.carbs_g }}</td>
+                        <td>{{ d.prot_g }}</td>
+                        <td>{{ d.gras_g }}</td>
+                        <td>{{ d.kcal }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
 
-    </main>
+            <div class="alert alert-success">
+                <h5 class="mb-1">Totales de la receta</h5>
+                <p class="mb-0"><strong>Carbohidratos:</strong> {{ resultado.totales.carbs }} g</p>
+                <p class="mb-0"><strong>Proteínas:</strong> {{ resultado.totales.proteina }} g</p>
+                <p class="mb-0"><strong>Grasas:</strong> {{ resultado.totales.grasas }} g</p>
+                <p class="mb-0"><strong>Calorías aproximadas:</strong> {{ resultado.totales.kcal }} kcal</p>
+            </div>
+        {% else %}
+            <div class="alert alert-info">No hay ingredientes calculados (o todos fueron desconocidos).</div>
+        {% endif %}
+    {% endif %}
 
+    <hr>
+    <h6>Alimentos disponibles en la tabla interna</h6>
+    <div class="mb-5">
+        {% for k in db_keys %}
+            <span class="badge bg-secondary me-1 mb-1">{{ k }}</span>
+        {% endfor %}
+    </div>
+
+</main>
+
+<script>
+function agregarCampo() {
+    const cont = document.getElementById("ingredientes");
+    const html = `
+    <div class="row g-2 align-items-center mb-2">
+        <div class="col-6">
+            <input type="text" name="ingrediente" class="form-control" placeholder="Ingrediente (ej. pollo)">
+        </div>
+        <div class="col-3">
+            <input type="number" step="0.1" name="cantidad" class="form-control" placeholder="Cantidad (g)" >
+        </div>
+        <div class="col-3">
+            <button type="button" class="btn btn-outline-secondary w-100" onclick="this.closest('.row').remove()">Eliminar</button>
+        </div>
+    </div>
+    `;
+    cont.insertAdjacentHTML('beforeend', html);
+}
+
+function autocompletarEjemplo() {
+    agregarCampo();
+    agregarCampo();
+    agregarCampo();
+    const rows = document.querySelectorAll('#ingredientes .row');
+    if (rows.length >= 3) {
+        rows[rows.length-3].querySelector('input[name="ingrediente"]').value = 'pollo';
+        rows[rows.length-3].querySelector('input[name="cantidad"]').value = 200;
+        rows[rows.length-2].querySelector('input[name="ingrediente"]').value = 'arroz';
+        rows[rows.length-2].querySelector('input[name="cantidad"]').value = 150;
+        rows[rows.length-1].querySelector('input[name="ingrediente"]').value = 'aguacate';
+        rows[rows.length-1].querySelector('input[name="cantidad"]').value = 50;
+    }
+}
+</script>
 </body>
 </html>
