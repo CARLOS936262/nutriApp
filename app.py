@@ -78,5 +78,61 @@ def macros():
         resultado = {"prote": prote, "carbs": carbs, "grasas": grasas}
     return render_template("macros.html", resultado=resultado)
 
+@app.route("/analizador", methods=["GET", "POST"])
+def analizador():
+    resultado = None
+    if request.method == "POST":
+        texto = request.form["ingredientes"].lower()
+        calorias = 0
+
+        base = {
+            "huevo": 78,
+            "manzana": 95,
+            "pollo": 165,
+            "arroz": 206,
+            "leche": 150,
+            "pan": 80,
+            "cebolla":47,
+            "coliflor":30,
+            "lechuga":18,
+            "pepino":12,
+            "repollo":19,
+            "zanahoria":42,
+            "tomate":22,
+            "ciruela":44,
+            "kiwi":51,
+            "fresa":36,
+            "coco":646,
+            "limon":39,
+            "mango":57,
+            "melon":31,
+            "naranja":44,
+            "platano":90,
+            "almendras":620,
+            "queso":70,
+            "tocino":665,
+            "chorizo":468,
+            "jamon":380,
+            "hamburguesa":230,
+            "pavo":186,
+            "salchichon":294,
+            "tripas":100,
+            "carne":186,
+            "mojarras":88,
+            "sardina":151,
+            "salmon":172,
+            "atun":225,
+            "tortilla":15,
+            "mayonesa":150,
+        }
+
+        for ingrediente, cal in base.items():
+            if ingrediente in texto:
+                calorias += cal
+
+        resultado = calorias
+
+    return render_template("analizador.html", resultado=resultado)
+
 if __name__ == '__main__':
     app.run(debug=True)
