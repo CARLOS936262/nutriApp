@@ -77,6 +77,20 @@
             </form>
         </section>
 
+
+        {% if usuario %}
+        <h2>Datos registrados:</h2>
+        <p><strong>Nombre:</strong> {{ usuario.nombre }}</p>
+        <p><strong>Peso:</strong> {{ usuario.peso }} kg</p>
+        <p><strong>Altura:</strong> {{ usuario.altura }} cm</p>
+        <p><strong>Edad:</strong> {{ usuario.edad }}</p>
+        <p><strong>Sexo:</strong> {{ usuario.sexo }}</p>
+        <p><strong>Nivel:</strong> {{ usuario.nivel }}</p>
+        <p><strong>Email:</strong> {{ usuario.email }}</p>
+        
+        <a href="{{ url_for('logout') }}">Cerrar sesión</a>
+        {% endif %}
+
         <section class="my-4 p-3 bg-light rounded">
             <h2 class="text-center">Objetivos</h2>
             <div class="d-flex flex-wrap justify-content-center">

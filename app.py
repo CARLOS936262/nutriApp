@@ -1,10 +1,33 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for, session
 
 app = Flask(__name__)
+app.secret_key = "super_secreto_123"
+
 
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route("/perfil", methods=["GET", "POST"])
+def perfil():
+    if request.method == "POST":
+        session["usuario"] = {
+            "nombre": request.form["nombre"],
+            "peso": request.form["peso"],
+            "altura": request.form["altura"],
+            "edad": request.form["edad"],
+            "sexo": request.form.get("sexo"),
+            "nivel": request.form.get("nivel"),
+            "email": request.form["email"]
+        }
+        return redirect(url_for("perfil"))
+
+    return render_template("perfil.html", usuario=session.get("usuario"))
+
+@app.route("/logout")
+def logout():
+    session.pop("usuario", None)
+    return redirect(url_for("perfil"))
 
 @app.route('/educacion')
 def educacion():
