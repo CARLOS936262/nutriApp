@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es-mx">
+<head>
+    <meta charset="UTF-8">
+    <title>Banco de Recetas - nutriApp</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+    {% include 'menu.html' %}
+
+    <main class="container bg-white p-4 mt-4 rounded shadow">
+
+        <h1 class="text-center mb-4">Banco de Recetas Saludables</h1>
+
+        <form class="row g-3 bg-light p-3 rounded shadow-sm">
+            <div class="col-md-6">
+                <label class="form-label">Tipo de dieta</label>
+                <select class="form-select">
+                    <option>Vegano</option>
+                    <option>Sin gluten</option>
+                    <option>Keto</option>
+                    <option>Mediterráneo</option>
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Tiempo de preparación</label>
+                <select class="form-select">
+                    <option>Menos de 15 min</option>
+                    <option>15-30 min</option>
+                    <option>Más de 30 min</option>
+                </select>
+            </div>
+        </form>
+
+        <h3 class="mt-4">Recetas disponibles</h3>
+        <ul class="list-group">
+            <li class="list-group-item">Pollo al limón (Keto)</li>
+            <li class="list-group-item">Smoothie verde detox</li>
+            <li class="list-group-item">Ensalada mediterránea</li>
+        </ul>
+
+    </main>
+
+</body>
+</html>
