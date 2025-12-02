@@ -14,9 +14,68 @@
 
         <h1 class="text-center text-dark">Perfil del Usuario y Objetivos</h1>
 
-        <!-- (TODO TU FORMULARIO AQUÍ - ya lo tienes) -->
+        <!-- Formulario de Registro -->
+        <form action="/registrar" method="POST" class="bg-light p-4 rounded shadow-sm">
+            
+            <!-- Nombre Completo -->
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre Completo</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" required>
+            </div>
 
-        <!-- Puedes copiar y pegar aquí tu formulario intacto -->
+            <!-- Peso -->
+            <div class="mb-3">
+                <label for="peso" class="form-label">Peso (kg)</label>
+                <input type="number" class="form-control" id="peso" name="peso" required>
+            </div>
+
+            <!-- Altura -->
+            <div class="mb-3">
+                <label for="altura" class="form-label">Altura (cm)</label>
+                <input type="number" class="form-control" id="altura" name="altura" required>
+            </div>
+
+            <!-- Edad -->
+            <div class="mb-3">
+                <label for="edad" class="form-label">Edad</label>
+                <input type="number" class="form-control" id="edad" name="edad" required>
+            </div>
+
+            <!-- Género -->
+            <div class="mb-3">
+                <label for="genero" class="form-label">Género</label>
+                <select class="form-select" id="genero" name="genero" required>
+                    <option value="hombre">Hombre</option>
+                    <option value="mujer">Mujer</option>
+                </select>
+            </div>
+
+            <!-- Nivel de Actividad Física -->
+            <div class="mb-3">
+                <label for="actividad" class="form-label">Nivel de Actividad Física</label>
+                <select class="form-select" id="actividad" name="actividad" required>
+                    <option value="baja">Baja</option>
+                    <option value="media">Media</option>
+                    <option value="alta">Alta</option>
+                </select>
+            </div>
+
+            <!-- Correo Electrónico -->
+            <div class="mb-3">
+                <label for="email" class="form-label">Correo Electrónico</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+
+            <!-- Contraseña -->
+            <div class="mb-3">
+                <label for="contrasena" class="form-label">Contraseña</label>
+                <input type="password" class="form-control" id="contrasena" name="contrasena" required>
+            </div>
+
+            <!-- Botón de Enviar -->
+            <button type="submit" class="btn btn-primary">Registrar</button>
+        </form>
+
     </main>
 
 </body>
